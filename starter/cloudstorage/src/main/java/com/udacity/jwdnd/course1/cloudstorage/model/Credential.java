@@ -7,6 +7,12 @@ public class Credential {
 
     private String credPassword;
 
+    public Credential(String url, String credUsername, String credPassword) {
+        this.url = url;
+        this.credUsername = credUsername;
+        this.credPassword = credPassword;
+    }
+
     public String getUrl() {
         return url;
     }
