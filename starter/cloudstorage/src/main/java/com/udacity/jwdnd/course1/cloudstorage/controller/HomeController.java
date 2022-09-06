@@ -16,8 +16,8 @@ public class HomeController {
     }
 
     @GetMapping()
-    public String getHomePage(AttachmentListService attachmentListService, Model model, String fileName, Integer userId) {
-        model.addAttribute(this.attachmentListService.getFile(fileName, userId));
+    public String getHomePage(Model model) {
+        model.addAttribute("Welcome", "Hi Home");
         return "home";
     }
 
