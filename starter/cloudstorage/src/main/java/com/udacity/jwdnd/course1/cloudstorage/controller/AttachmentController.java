@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/home/attachment")
+
 public class AttachmentController {
     private AttachmentListService attachmentListService;
     private UserService userService;
@@ -28,8 +28,8 @@ public class AttachmentController {
         this.attachmentListService = attachmentListService;
         this.userService = userService;
     }
-    @PostMapping("/upload")
-    public String uploadAttachment(@RequestParam("upload") MultipartFile attachment, Authentication authentication, Model model) {
+    @PostMapping("/upload/attachment")
+    public String uploadAttachment(@RequestParam("fileUpload") MultipartFile attachment, Authentication authentication, Model model) {
         Integer currentUserId = userService.getUser(authentication.getName()).getUserId();
 
         try {
