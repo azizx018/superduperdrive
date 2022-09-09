@@ -5,13 +5,13 @@ public class Attachment {
 
     private String fileName;
     private String contentType;
-    private String fileSize;
+    private Long fileSize;
     private Integer userId;
-    private Byte[] fileData;
+    private byte[] fileData;
 
 
 
-    public Attachment(Integer fileId, String fileName, String contentType, String fileSize, Integer userId, Byte[] fileData) {
+    public Attachment(Integer fileId, String fileName, String contentType, Long fileSize, Integer userId, byte[] fileData) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.contentType = contentType;
@@ -27,7 +27,7 @@ public class Attachment {
         this.contentType = contentType;
     }
 
-    public void setFileSize(String fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 
@@ -35,7 +35,7 @@ public class Attachment {
         this.userId = userId;
     }
 
-    public void setFileData(Byte[] fileData) {
+    public void setFileData(byte[] fileData) {
         this.fileData = fileData;
     }
 
@@ -43,7 +43,7 @@ public class Attachment {
         return contentType;
     }
 
-    public String getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
@@ -51,7 +51,7 @@ public class Attachment {
         return userId;
     }
 
-    public Byte[] getFileData() {
+    public byte[] getFileData() {
         return fileData;
     }
 

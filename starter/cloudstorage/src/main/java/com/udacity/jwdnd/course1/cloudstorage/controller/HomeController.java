@@ -14,12 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/home")
 public class HomeController {
+    @Autowired
     private AttachmentListService attachmentListService;
     @Autowired
     private UserService userService;
 
-    public HomeController(AttachmentListService attachmentListService) {
+
+
+    public HomeController(AttachmentListService attachmentListService, UserService userService) {
         this.attachmentListService = attachmentListService;
+        this.userService = userService;
     }
 
 

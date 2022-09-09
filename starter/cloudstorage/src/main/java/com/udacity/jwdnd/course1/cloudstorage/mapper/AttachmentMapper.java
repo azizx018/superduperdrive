@@ -11,7 +11,7 @@ public interface AttachmentMapper {
     Attachment getAttachmentInfoByFileName(String fileName, Integer userId);
 
     @Select("SELECT * FROM FILES WHERE fileId = #{fileId}")
-    Attachment getAttachmentByFileId(Integer fileId);
+    Attachment getAttachmentByFileId(String fileId);
 
     @Insert("INSERT INTO FILES (fileId, filename, contenttype, filesize, userid, filedata) " +
             "VALUES(#{fileId}, #{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
@@ -22,5 +22,5 @@ public interface AttachmentMapper {
     List<Attachment> getAttachmentsByUserId(Integer userId);
 
     @Delete("DELETE FROM FILES WHERE fileId = ${fileId}")
-    void deleteAttachmentByFileId(Integer fileId);
+    void deleteAttachmentByFileId(String fileId);
 }
