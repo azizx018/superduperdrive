@@ -8,14 +8,9 @@ import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 @Controller
@@ -29,23 +24,59 @@ public class AttachmentController {
         this.userService = userService;
     }
     @PostMapping("/upload/attachment")
-    public String uploadAttachment(@RequestParam("fileUpload") MultipartFile attachment, Authentication authentication, Model model) {
+    public String uploadAttachment(@RequestParam("fileUpload") MultipartFile attachment, Authentication authentication, Model model) throws IOException{
         Integer currentUserId = userService.getUser(authentication.getName()).getUserId();
+        String fileName = attachment.getOriginalFilename();
+        Boolean isAttachmentNameAvailable = attachmentListService.isAttachmentNameAvailable(fileName, currentUserId);
+
+        if(isAttachmentNameAvailable == false) {
+            model.addAttribute("error", true);
+            model.addAttribute("message", "The file name " + fileName + " is already taken!");
+            return "result";
+        }
 
         try {
             Integer fileId = attachmentListService.saveUploadedFile(attachment, currentUserId);
-
             if(fileId > 0) {
                 model.addAttribute("success",true);
-                model.addAttribute("message", "You successfully uploaded" + attachment.getOriginalFilename() + "!");
+                model.addAttribute("message", "You successfully uploaded" + fileName + "!");
             } else {
                 model.addAttribute("error", true);
-                model.addAttribute("message", "There was an error uploading your file " + attachment.getOriginalFilename() + "!");
+                model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
             }
-        } catch (IOException ioException) {
+
+
+        } catch (IOException ioexception) {
             model.addAttribute("error", true);
-            model.addAttribute("message", "There was an error uploading your file " + attachment.getOriginalFilename() + "!");
+            model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
         }
+
+        //        (isAttachmentNameAvailable == true)
+//            Integer fileId = attachmentListService.saveUploadedFile(attachment, currentUserId);
+
+////        try {
+////            //Boolean isAttachmentNameAvailable = attachmentListService.isAttachmentNameAvailable(fileName, currentUserId);
+////            // model.addAttribute("error", "The file name " + fileName + " is already taken!");
+////                //throw new IllegalArgumentException();
+////
+////            }
+////            Integer fileId = attachmentListService.saveUploadedFile(attachment, currentUserId);
+//
+//            if(fileId > 0) {
+//                model.addAttribute("success",true);
+//                model.addAttribute("message", "You successfully uploaded" + fileName + "!");
+//            } else {
+//                model.addAttribute("error", true);
+//                model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
+//            }
+//        } catch (IOException exception) {
+//            model.addAttribute("error", true);
+//            model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
+//        }
+//        catch (IllegalArgumentException exception) {
+//            model.addAttribute("error", true);
+//            model.addAttribute("message", "The file name " + fileName + " is already taken!");
+//        }
         return "result";
     }
 //    @PostMapping("/upload")

@@ -2,13 +2,15 @@ package com.udacity.jwdnd.course1.cloudstorage.mapper;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.Attachment;
 import org.apache.ibatis.annotations.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Mapper
 public interface AttachmentMapper {
     @Select("SELECT fileId, filename, contenttype, filesize FROM FILES WHERE fileName = #{fileName} AND userId = ${userId}")
-    Attachment getAttachmentInfoByFileName(String fileName, Integer userId);
+    @Options()
+    Attachment getAttachmentInfoByFileName(@Param("fileName") String fileName, Integer userId);
 
     @Select("SELECT * FROM FILES WHERE fileId = #{fileId}")
     Attachment getAttachmentByFileId(String fileId);

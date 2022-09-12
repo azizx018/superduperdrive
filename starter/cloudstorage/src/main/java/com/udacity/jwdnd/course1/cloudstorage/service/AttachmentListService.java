@@ -17,9 +17,7 @@ public class AttachmentListService {
         this.attachmentMapper = attachmentMapper;
     }
 
-    public boolean isAttachmentNameAvailable(Attachment attachment) {
-        String fileName = attachment.getFileName();
-        Integer userId = attachment.getUserId();
+    public boolean isAttachmentNameAvailable(String fileName, Integer userId) {
         return attachmentMapper.getAttachmentInfoByFileName(fileName, userId) == null;
     }
     public Integer saveUploadedFile(MultipartFile multipartFile, Integer userId) throws IOException {
