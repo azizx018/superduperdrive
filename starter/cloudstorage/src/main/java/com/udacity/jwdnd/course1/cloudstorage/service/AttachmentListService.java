@@ -29,6 +29,11 @@ public class AttachmentListService {
     public List<Attachment>  getAttachmentsByUser(Integer userId) {
         return attachmentMapper.getAttachmentsByUserId(userId);
     }
+    public Attachment getUserRequestedImage(Integer fileId) {
+        return attachmentMapper.getAttachmentByFileId(fileId);
+    }
+
+
 
 
 }

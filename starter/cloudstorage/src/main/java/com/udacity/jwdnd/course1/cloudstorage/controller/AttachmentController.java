@@ -5,9 +5,16 @@ import com.udacity.jwdnd.course1.cloudstorage.model.Attachment;
 import com.udacity.jwdnd.course1.cloudstorage.service.AttachmentListService;
 import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
 
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -105,5 +112,11 @@ public class AttachmentController {
 //        }
 //        return "redirect:/home?message=File Upload Was Successful!&status=true";
 //    }
+    @GetMapping("/attachment/view/{fileId}")
+    public ResponseEntity<Resource> viewAttachment(@PathVariable Integer fileId, Authentication authentication, Attachment attachment) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(attachment.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + attachment.getFileName() + "\"").body(new ByteArrayResource(attachment.getFileData()));
+    }
 
 }

@@ -12,8 +12,8 @@ public interface AttachmentMapper {
     @Options()
     Attachment getAttachmentInfoByFileName(@Param("fileName") String fileName, Integer userId);
 
-    @Select("SELECT * FROM FILES WHERE fileId = #{fileId}")
-    Attachment getAttachmentByFileId(String fileId);
+    @Select("SELECT * FROM FILES WHERE fileId = ${fileId}")
+    Attachment getAttachmentByFileId(Integer fileId);
 
     @Insert("INSERT INTO FILES (fileId, filename, contenttype, filesize, userid, filedata) " +
             "VALUES(#{fileId}, #{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
