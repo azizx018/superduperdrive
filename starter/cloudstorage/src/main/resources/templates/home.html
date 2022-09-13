@@ -51,7 +51,7 @@
                                 <tbody>
                                 <tr th:each="attachment : ${attachments}">
                                     <td>
-                                        <a target="{attachment.fileName}" th:href="@{/attachment/view/{fileId}(fileId=${attachment.fileId})}" class="btn btn-success">View</a>
+                                        <a target="{attachment.fileName}" th:href="@{'/attachment/view/' + ${attachment.getFileId()}}" class="btn btn-success">View</a>
                                         <a  class="btn btn-danger">Delete</a>
                                     </td>
                                     <th scope="row" class="attachmentFileName" th:text="${attachment.fileName}">ExampleFile.txt</th>

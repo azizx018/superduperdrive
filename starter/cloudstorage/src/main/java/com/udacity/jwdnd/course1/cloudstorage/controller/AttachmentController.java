@@ -113,10 +113,13 @@ public class AttachmentController {
 //        return "redirect:/home?message=File Upload Was Successful!&status=true";
 //    }
     @GetMapping("/attachment/view/{fileId}")
-    public ResponseEntity<Resource> viewAttachment(@PathVariable Integer fileId, Authentication authentication, Attachment attachment) {
+    public ResponseEntity viewAttachment(@PathVariable("fileId") Integer fileId) {
+        Attachment attachment = attachmentListService.getUserRequestedImage(fileId);
+        String fileName = attachment.getFileName();
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(attachment.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + attachment.getFileName() + "\"").body(new ByteArrayResource(attachment.getFileData()));
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=\"" + fileName + "\"")
+                .body(attachment.getFileData());
     }
 
 }
