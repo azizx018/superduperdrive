@@ -20,6 +20,16 @@
                 <span th:text="${message}">Your changes were not saved. </span>
                 <span>Click <a th:href="@{/home}">here</a> to continue.</span>
             </div>
+            <div th:if="${empty}" class="alert alert-danger fill-parent">
+                <h1 class="display-5">Error</h1>
+                <span th:text="${message}">Please upload a file! </span>
+                <span>Click <a th:href="@{/home}">here</a> to continue.</span>
+            </div>
+            <div th:if="${exists}" class="alert alert-danger fill-parent">
+                <h1 class="display-5">Error</h1>
+                <span th:text="${message}">File name already exists! </span>
+                <span>Click <a th:href="@{/home}">here</a> to continue.</span>
+            </div>
 <!--            <div class="alert alert-danger fill-parent">-->
 <!--                <h1 class="display-5">Error</h1>-->
 <!--                <span>Example Error Message</span>-->

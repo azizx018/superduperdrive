@@ -8,9 +8,8 @@ import java.util.List;
 
 @Mapper
 public interface AttachmentMapper {
-    @Select("SELECT fileId, filename, contenttype, filesize FROM FILES WHERE fileName = #{fileName} AND userId = ${userId}")
-    @Options()
-    Attachment getAttachmentInfoByFileName(@Param("fileName") String fileName, Integer userId);
+    @Select("SELECT * FROM FILES WHERE filename = #{filename} AND userId = #{userId}")
+    Attachment getAttachmentInfoByFileName(String filename, Integer userId);
 
     @Select("SELECT * FROM FILES WHERE fileId = ${fileId}")
     Attachment getAttachmentByFileId(Integer fileId);

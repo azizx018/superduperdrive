@@ -30,20 +30,28 @@ public class AttachmentController {
         this.attachmentListService = attachmentListService;
         this.userService = userService;
     }
+
     @PostMapping("/upload/attachment")
     public String uploadAttachment(@RequestParam("fileUpload") MultipartFile attachment, Authentication authentication, Model model) throws IOException{
         Integer currentUserId = userService.getUser(authentication.getName()).getUserId();
         String fileName = attachment.getOriginalFilename();
         Boolean isAttachmentNameAvailable = attachmentListService.isAttachmentNameAvailable(fileName, currentUserId);
 
-        if(isAttachmentNameAvailable == false) {
-            model.addAttribute("error", true);
-            model.addAttribute("message", "The file name " + fileName + " is already taken!");
-            return "result";
-        }
-
         try {
+            //Give the user an error no file is selected
+            if (attachment.isEmpty()) {
+                model.addAttribute("empty", true);
+                model.addAttribute("message", "Please choose a file to upload!");
+                return "result";
+            }
+            // check is the fileName already exists
+            if(!isAttachmentNameAvailable) {
+                model.addAttribute("exists", true);
+                model.addAttribute("message", "The file name " + fileName + " is already taken!");
+                return "result";
+            }
             Integer fileId = attachmentListService.saveUploadedFile(attachment, currentUserId);
+
             if(fileId > 0) {
                 model.addAttribute("success",true);
                 model.addAttribute("message", "You successfully uploaded" + fileName + "!");
@@ -51,24 +59,26 @@ public class AttachmentController {
                 model.addAttribute("error", true);
                 model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
             }
-
-
         } catch (IOException ioexception) {
             model.addAttribute("error", true);
             model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
         }
-
-        //        (isAttachmentNameAvailable == true)
-//            Integer fileId = attachmentListService.saveUploadedFile(attachment, currentUserId);
-
-////        try {
-////            //Boolean isAttachmentNameAvailable = attachmentListService.isAttachmentNameAvailable(fileName, currentUserId);
-////            // model.addAttribute("error", "The file name " + fileName + " is already taken!");
-////                //throw new IllegalArgumentException();
-////
-////            }
-////            Integer fileId = attachmentListService.saveUploadedFile(attachment, currentUserId);
+        return "result";
+    }
+//    @PostMapping("/upload/attachment")
+//    public String uploadAttachment(@RequestParam("fileUpload") MultipartFile attachment, Authentication authentication, Model model) throws IOException{
+//        Integer currentUserId = userService.getUser(authentication.getName()).getUserId();
+//        String fileName = attachment.getOriginalFilename();
+//        Boolean isAttachmentNameAvailable = attachmentListService.isAttachmentNameAvailable(fileName, currentUserId);
 //
+//        if(isAttachmentNameAvailable == false) {
+//            model.addAttribute("error", true);
+//            model.addAttribute("message", "The file name " + fileName + " is already taken!");
+//            return "result";
+//        }
+//
+//        try {
+//            Integer fileId = attachmentListService.saveUploadedFile(attachment, currentUserId);
 //            if(fileId > 0) {
 //                model.addAttribute("success",true);
 //                model.addAttribute("message", "You successfully uploaded" + fileName + "!");
@@ -76,16 +86,17 @@ public class AttachmentController {
 //                model.addAttribute("error", true);
 //                model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
 //            }
-//        } catch (IOException exception) {
+//
+//
+//        } catch (IOException ioexception) {
 //            model.addAttribute("error", true);
 //            model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
 //        }
-//        catch (IllegalArgumentException exception) {
-//            model.addAttribute("error", true);
-//            model.addAttribute("message", "The file name " + fileName + " is already taken!");
-//        }
-        return "result";
-    }
+//
+//        return "result";
+//    }
+
+
 //    @PostMapping("/upload")
 //    public String uploadAttachment(@RequestParam("/upload") @ModelAttribute Attachment attachment, Model model) {
 //        String attachmentUploadError = null;
