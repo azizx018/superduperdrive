@@ -65,64 +65,7 @@ public class AttachmentController {
         }
         return "result";
     }
-//    @PostMapping("/upload/attachment")
-//    public String uploadAttachment(@RequestParam("fileUpload") MultipartFile attachment, Authentication authentication, Model model) throws IOException{
-//        Integer currentUserId = userService.getUser(authentication.getName()).getUserId();
-//        String fileName = attachment.getOriginalFilename();
-//        Boolean isAttachmentNameAvailable = attachmentListService.isAttachmentNameAvailable(fileName, currentUserId);
-//
-//        if(isAttachmentNameAvailable == false) {
-//            model.addAttribute("error", true);
-//            model.addAttribute("message", "The file name " + fileName + " is already taken!");
-//            return "result";
-//        }
-//
-//        try {
-//            Integer fileId = attachmentListService.saveUploadedFile(attachment, currentUserId);
-//            if(fileId > 0) {
-//                model.addAttribute("success",true);
-//                model.addAttribute("message", "You successfully uploaded" + fileName + "!");
-//            } else {
-//                model.addAttribute("error", true);
-//                model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
-//            }
-//
-//
-//        } catch (IOException ioexception) {
-//            model.addAttribute("error", true);
-//            model.addAttribute("message", "There was an error uploading your file " + fileName + "!");
-//        }
-//
-//        return "result";
-//    }
 
-
-//    @PostMapping("/upload")
-//    public String uploadAttachment(@RequestParam("/upload") @ModelAttribute Attachment attachment, Model model) {
-//        String attachmentUploadError = null;
-//
-//        if (!attachmentListService.isAttachmentNameAvailable(attachment)) {
-//            attachmentUploadError = "That file name already exists.";
-//            model.addAttribute("error", true);
-//            model.addAttribute("message",attachmentUploadError);
-//
-//        }
-//
-//        if (attachmentUploadError == null) {
-//            int rowsAdded = attachmentListService.saveUploadedFile(attachment);
-//            if (rowsAdded < 0) {
-//                attachmentUploadError = "There was an error adding your file." + attachment.getFileName() +  "Please try again.";
-//                model.addAttribute("error", true);
-//                model.addAttribute("message",attachmentUploadError);
-//            }
-//        }
-//
-//        if (attachmentUploadError != null) {
-//            model.addAttribute("success", true);
-//            return "result";
-//        }
-//        return "redirect:/home?message=File Upload Was Successful!&status=true";
-//    }
     @GetMapping("/attachment/view/{fileId}")
     public ResponseEntity viewAttachment(@PathVariable("fileId") Integer fileId) {
         Attachment attachment = attachmentListService.getUserRequestedImage(fileId);
@@ -131,6 +74,12 @@ public class AttachmentController {
                 .contentType(MediaType.parseMediaType(attachment.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=\"" + fileName + "\"")
                 .body(attachment.getFileData());
+    }
+
+    @GetMapping("/deleteAttachment/{fileId}")
+    public String deleteAttachment(@PathVariable("fileId") Integer fileId) {
+        attachmentListService.deleteUploadedAttachment(fileId);
+        return "home";
     }
 
 }

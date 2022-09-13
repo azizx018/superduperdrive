@@ -32,6 +32,9 @@ public class AttachmentListService {
     public Attachment getUserRequestedImage(Integer fileId) {
         return attachmentMapper.getAttachmentByFileId(fileId);
     }
+    public void deleteUploadedAttachment(Integer fileId) {
+        attachmentMapper.deleteAttachmentByFileId(fileId);
+    }
 
 
 
