@@ -23,6 +23,14 @@
                         <a class="nav-item nav-link" id="nav-credentials-tab" data-toggle="tab" href="#nav-credentials" role="tab" aria-controls="nav-credentials" aria-selected="false">Credentials</a>
                     </div>
                 </nav>
+                <div th:if="${error}" class="alert alert-danger fill-parent">
+                    <h1 class="display-5">Error</h1>
+                    <span th:text="${message}"></span>
+                </div>
+                <div th:if="${success}" class="alert alert-success fill-parent">
+                    <h1 class="display-5" id="success">Success</h1>
+                    <span th:text="${message}"></span>
+                </div>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
                         <form action="#"  enctype="multipart/form-data" method="POST" th:action="@{'/upload/attachment'}">
@@ -39,6 +47,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </form>
                         <div  class="table-responsive">
                             <table class="table table-striped" id="fileTable">

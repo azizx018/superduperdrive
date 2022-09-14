@@ -79,20 +79,20 @@ public class AttachmentController {
     }
 
     @GetMapping("/deleteAttachment/{fileId}")
-    public String deleteAttachment(@PathVariable("fileId") Integer fileId, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String deleteAttachment(@PathVariable("fileId") Integer fileId, Authentication authentication, Model model) {
 
         Integer currentUserId = userService.getUser(authentication.getName()).getUserId();
 
         try{
             attachmentListService.deleteUploadedAttachment(fileId);
-            redirectAttributes.addAttribute("success", true);
-            redirectAttributes.addAttribute("message", "You have successfully deleted your file!");
+            model.addAttribute("success", true);
+            model.addAttribute("message", "You have successfully deleted your file!");
         } catch (Exception e) {
-            redirectAttributes.addAttribute("error", true);
-            redirectAttributes.addAttribute("message", "There was an error deleting your file.");
+            model.addAttribute("error", true);
+            model.addAttribute("message", "There was an error deleting your file.");
         }
 
-        return "redirect:/home";
+        return "result";
     }
 
 }
