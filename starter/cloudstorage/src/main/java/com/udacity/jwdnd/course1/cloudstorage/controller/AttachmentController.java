@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.io.IOException;
 
 @Controller
@@ -77,9 +79,20 @@ public class AttachmentController {
     }
 
     @GetMapping("/deleteAttachment/{fileId}")
-    public String deleteAttachment(@PathVariable("fileId") Integer fileId) {
-        attachmentListService.deleteUploadedAttachment(fileId);
-        return "home";
+    public String deleteAttachment(@PathVariable("fileId") Integer fileId, Authentication authentication, RedirectAttributes redirectAttributes) {
+
+        Integer currentUserId = userService.getUser(authentication.getName()).getUserId();
+
+        try{
+            attachmentListService.deleteUploadedAttachment(fileId);
+            redirectAttributes.addAttribute("success", true);
+            redirectAttributes.addAttribute("message", "You have successfully deleted your file!");
+        } catch (Exception e) {
+            redirectAttributes.addAttribute("error", true);
+            redirectAttributes.addAttribute("message", "There was an error deleting your file.");
+        }
+
+        return "redirect:/home";
     }
 
 }

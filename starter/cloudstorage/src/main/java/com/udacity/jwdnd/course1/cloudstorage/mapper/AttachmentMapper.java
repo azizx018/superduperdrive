@@ -23,5 +23,5 @@ public interface AttachmentMapper {
     List<Attachment> getAttachmentsByUserId(Integer userId);
 
     @Delete("DELETE FROM FILES WHERE fileId = ${fileId}")
-    void deleteAttachmentByFileId(Integer fileId);
+    int deleteAttachmentByFileId(Integer fileId);
 }
