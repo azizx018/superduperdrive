@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -15,11 +16,14 @@ import org.springframework.boot.web.server.LocalServerPort;
 import java.io.File;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
+	private WebDriver driver;
+	private static SignupPage signupPage;
 
 	@LocalServerPort
 	private int port;
+	public String baseUrl;
 
-	private WebDriver driver;
+
 
 	@BeforeAll
 	static void beforeAll() {
@@ -28,7 +32,10 @@ class CloudStorageApplicationTests {
 
 	@BeforeEach
 	public void beforeEach() {
+		baseUrl = "http://localhost:" + port;
 		this.driver = new ChromeDriver();
+		signupPage = new SignupPage(driver);
+
 	}
 
 	@AfterEach
@@ -43,6 +50,7 @@ class CloudStorageApplicationTests {
 		driver.get("http://localhost:" + this.port + "/login");
 		Assertions.assertEquals("Login", driver.getTitle());
 	}
+
 
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
@@ -197,6 +205,17 @@ class CloudStorageApplicationTests {
 			System.out.println("Large File upload failed");
 		}
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
+
+	}
+	@Test
+	public void userCannotAccessHomePageIfNotLoggedIn() {
+		driver.get(baseUrl + "/home");
+		Assertions.assertEquals("Login", driver.getTitle());
+
+	}
+	@Test
+	public void userCanAddFile() {
+		driver.get(baseUrl + "/login");
 
 	}
 
