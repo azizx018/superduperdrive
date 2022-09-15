@@ -18,6 +18,9 @@ import java.io.File;
 class CloudStorageApplicationTests {
 	private WebDriver driver;
 	private static SignupPage signupPage;
+	private static LoginPage loginPage;
+	private static HomePage homePage;
+	private static NotePage notePage;
 
 	@LocalServerPort
 	private int port;
@@ -35,6 +38,9 @@ class CloudStorageApplicationTests {
 		baseUrl = "http://localhost:" + port;
 		this.driver = new ChromeDriver();
 		signupPage = new SignupPage(driver);
+		loginPage = new LoginPage(driver);
+		homePage = new HomePage(driver);
+		notePage = new NotePage(driver);
 
 	}
 
@@ -214,8 +220,10 @@ class CloudStorageApplicationTests {
 
 	}
 	@Test
-	public void userCanAddFile() {
+	public void userAddNote() {
 		driver.get(baseUrl + "/login");
+		loginPage.login("Beaker", "123");
+		notePage.getNotes();
 
 	}
 
