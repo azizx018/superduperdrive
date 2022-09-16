@@ -11,6 +11,9 @@ public interface NoteMapper {
     @Select("SELECT * FROM NOTES WHERE noteid = #{noteId} AND userId = #{userId}")
     Note getNoteInfoByNoteId(Integer noteId, Integer userId);
 
+    @Select("SELECT * FROM NOTES WHERE notetile = #{noteTitle} AND userId = #{userId}")
+    Attachment getNoteInfoByNoteTitle(String noteTitle, Integer userId);
+
 
     @Insert("INSERT INTO NOTES (noteId, notetitle, notedescription, userid) " +
             "VALUES(#{noteId}, #{noteTitle}, #{noteDescription}, #{userId})")

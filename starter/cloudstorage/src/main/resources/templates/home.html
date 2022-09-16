@@ -80,17 +80,17 @@
                                     <tr>
                                         <th style="width: 20%" scope="col"></th>
                                         <th style="width: 20%" scope="col" >Title</th>
-                                        <th style="width: 60%" scope="col">Description</th>
+                                        <th style="width: 60%" scope="col" >Description</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr th:each="note : ${notes}">
                                         <td>
                                             <button type="button" class="btn btn-success" id="editNote">Edit</button>
                                             <a class="btn btn-danger" id="deleteNote">Delete</a>
                                         </td>
-                                        <th scope="row">Example Note Title</th>
-                                        <td>Example Note Description </td>
+                                        <th scope="row" th:text="${note.getNoteTitle()}">Example Note Title</th>
+                                        <td th:text="${note.getNoteDescription()}">Example Note Description </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -106,7 +106,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
+                                        <form action="#" method="POST" th:action="@{'/add/note'}">
                                             <input type="hidden" name="noteId" id="note-id">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
