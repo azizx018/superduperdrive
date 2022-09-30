@@ -9,10 +9,15 @@ import java.util.List;
 @Service
 public class CredentialListService {
     private  final CredentialMapper credentialMapper;
+    private final EncryptionService encryptionService;
 
-    public CredentialListService(CredentialMapper credentialMapper) {
+    public CredentialListService(CredentialMapper credentialMapper, EncryptionService encryptionService) {
         this.credentialMapper = credentialMapper;
+        this.encryptionService = encryptionService;
     }
+//    private void encryptPassword(Credential credential) {
+//
+//    }
 
     public int updateCred(Credential credential) {
         credential.setCredentialId(credential.getCredentialId());
@@ -24,7 +29,7 @@ public class CredentialListService {
     }
     public int saveCred(Credential credential, Integer userId) {
         return credentialMapper.saveCred(new Credential(null, credential.getUrl(), credential.getUsername(),
-                credential.getPassword(), userId));
+                credential.getKey(), credential.getPassword(), userId));
     }
     public List<Credential> getCredByUser(Integer userId) {
         return credentialMapper.getCredentialByUser(userId);

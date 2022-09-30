@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.service.AttachmentListService;
+import com.udacity.jwdnd.course1.cloudstorage.service.CredentialListService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteListService;
 import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
 
@@ -23,14 +24,18 @@ public class HomeController {
     private AttachmentListService attachmentListService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CredentialListService credentialListService;
 
 
 
 
-    public HomeController(AttachmentListService attachmentListService, NoteListService noteListService, UserService userService) {
+    public HomeController(AttachmentListService attachmentListService, NoteListService noteListService,
+                          UserService userService, CredentialListService credentialListService) {
         this.attachmentListService = attachmentListService;
         this.userService = userService;
         this.noteListService = noteListService;
+        this.credentialListService = credentialListService;
 
     }
 
@@ -41,6 +46,7 @@ public class HomeController {
         int userId = user.getUserId();
         model.addAttribute("notes", noteListService.getNotesByUser(userId));
         model.addAttribute("attachments", attachmentListService.getAttachmentsByUser(userId));
+        model.addAttribute("credentials", credentialListService.getCredByUser(userId));
         return "home";
     }
 
