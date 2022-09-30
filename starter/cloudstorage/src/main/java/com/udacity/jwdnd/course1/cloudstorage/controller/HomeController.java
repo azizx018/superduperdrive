@@ -44,11 +44,6 @@ public class HomeController {
         return "home";
     }
 
-//    @PostMapping("/logout")
-//    public String backLogin(Model model) {
-//        model.addAttribute("loutOutStatus", true);
-//        return "login";
-//    }
 
 
 }
