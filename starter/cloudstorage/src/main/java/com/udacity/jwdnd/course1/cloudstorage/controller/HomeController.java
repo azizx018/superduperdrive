@@ -2,10 +2,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.service.AttachmentListService;
-import com.udacity.jwdnd.course1.cloudstorage.service.CredentialListService;
-import com.udacity.jwdnd.course1.cloudstorage.service.NoteListService;
-import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
+import com.udacity.jwdnd.course1.cloudstorage.service.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -26,16 +23,19 @@ public class HomeController {
     private UserService userService;
     @Autowired
     private CredentialListService credentialListService;
+    private EncryptionService encryptionService;
 
 
 
 
     public HomeController(AttachmentListService attachmentListService, NoteListService noteListService,
-                          UserService userService, CredentialListService credentialListService) {
+                          UserService userService, CredentialListService credentialListService,
+                          EncryptionService encryptionService) {
         this.attachmentListService = attachmentListService;
         this.userService = userService;
         this.noteListService = noteListService;
         this.credentialListService = credentialListService;
+        this.encryptionService = encryptionService;
 
     }
 
@@ -47,6 +47,7 @@ public class HomeController {
         model.addAttribute("notes", noteListService.getNotesByUser(userId));
         model.addAttribute("attachments", attachmentListService.getAttachmentsByUser(userId));
         model.addAttribute("credentials", credentialListService.getCredByUser(userId));
+        model.addAttribute("encryptionService", encryptionService);
         return "home";
     }
 
