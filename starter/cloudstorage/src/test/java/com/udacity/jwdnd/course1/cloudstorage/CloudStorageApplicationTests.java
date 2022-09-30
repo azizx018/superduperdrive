@@ -159,7 +159,7 @@ class CloudStorageApplicationTests {
 		
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + this.port + "/some-random-page");
-		Assertions.assertFalse(driver.getPageSource().contains("Whitelabel Error Page"));
+		Assertions.assertFalse(driver.getPageSource().contains("Oops! \uD83D\uDE33 This page does not exist! Try again later \uD83D\uDC7B"));
 	}
 
 
