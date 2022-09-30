@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
@@ -13,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
 
@@ -20,6 +24,7 @@ class CloudStorageApplicationTests {
 	private int port;
 
 	private WebDriver driver;
+	private NotePage notePage;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -29,6 +34,7 @@ class CloudStorageApplicationTests {
 	@BeforeEach
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
+		notePage = new NotePage(driver);
 	}
 
 	@AfterEach
@@ -41,7 +47,7 @@ class CloudStorageApplicationTests {
 	@Test
 	public void getLoginPage() {
 		driver.get("http://localhost:" + this.port + "/login");
-		Assertions.assertEquals("Login", driver.getTitle());
+		assertEquals("Login", driver.getTitle());
 	}
 
 	/**
@@ -136,7 +142,7 @@ class CloudStorageApplicationTests {
 		doMockSignUp("Redirection","Test","RT","123");
 		
 		// Check if we have been redirected to the login page.
-		Assertions.assertEquals("http://localhost:" + this.port + "/login?message=You%20successfully%20signed%20up!&status=true", driver.getCurrentUrl());
+		assertEquals("http://localhost:" + this.port + "/login?message=You%20successfully%20signed%20up!&status=true", driver.getCurrentUrl());
 	}
 
 	/**
@@ -159,7 +165,7 @@ class CloudStorageApplicationTests {
 		
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + this.port + "/some-random-page");
-		Assertions.assertFalse(driver.getPageSource().contains("Oops! \uD83D\uDE33 This page does not exist! Try again later \uD83D\uDC7B"));
+		Assertions.assertFalse(driver.getPageSource().contains("Oh no! This page does not exist!"));
 	}
 
 
@@ -197,6 +203,22 @@ class CloudStorageApplicationTests {
 			System.out.println("Large File upload failed");
 		}
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
+
+	}
+	@Test
+	public void testAddingANote() {
+		//create a test account
+		doMockSignUp("add note", "test", "Homer","claw");
+		doLogIn("Homer", "claw");
+
+		//Try to add a note
+		notePage.addTitle();
+		notePage.addDescription();
+		notePage.addNote();
+		//check that the values for title and description match
+		assertEquals("hello", notePage.getDisplayTitle());
+		assertEquals("Today", notePage.getDisplayDescription());
+
 
 	}
 
