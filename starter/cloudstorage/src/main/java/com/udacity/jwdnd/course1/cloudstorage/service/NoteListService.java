@@ -14,17 +14,15 @@ public class NoteListService {
         this.noteMapper = noteMapper;
     }
 
-    public void updateNote(Integer noteId, String noteTitle, String noteDescription, Integer userId) {
-        Note note = new Note(noteId, noteTitle, noteDescription, userId);
+    public int updateNote(Note note) {
         note.setNoteId(note.getNoteId());
         note.setNoteDescription(note.getNoteDescription());
         note.setNoteTitle(note.getNoteTitle());
-        noteMapper.updateNote(note);
+        return noteMapper.updateNote(note);
     }
 
-    public Integer saveNote(Integer noteId, String noteTitle, String noteDescription, Integer userId) {
-        Note note = new Note(null, noteTitle, noteDescription, userId);
-        return noteMapper.saveNote(note);
+    public int saveNote(Note note, Integer userId) {
+        return noteMapper.saveNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), note.getUserId()));
     }
     public Note getSelectedNote(Integer noteId) {
         return noteMapper.selectNote(noteId);
