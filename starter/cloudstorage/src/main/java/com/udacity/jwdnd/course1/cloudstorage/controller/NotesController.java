@@ -24,31 +24,20 @@ public class NotesController {
     }
 
     @PostMapping("/note/upload")
-    public String addOrUpdateNote(Authentication authentication, Note note, Model model) throws IOException {
+    public String addOrUpdateNote(Authentication authentication, Note note)  {
         Integer currentUser = userService.getUser(authentication.getName()).getUserId();
         note.setUserId(currentUser);
 
         if (note.getNoteId() != null) {
             noteListService.updateNote(note);
-            model.addAttribute("success", true);
-            model.addAttribute("message", "Your note is updated!");
-            return "result";
+
         } else {
             noteListService.saveNote(note, currentUser);
-            model.addAttribute("success", true);
-            model.addAttribute("message", "Your note is added!");
 
         }
         return "redirect:/home";
     }
-//    @GetMapping("/note/view/{noteId}")
-//    public ResponseEntity viewNote(@PathVariable("noteId") Integer noteId) {
-//        Note note = noteListService.getSelectedNote(noteId);
-//        String noteTitle = note.getNoteTitle();
-//        String noteDescription = note.getNoteDescription();
-//        return ResponseEntity.ok()
-//
-//    }
+
 
 
 }
