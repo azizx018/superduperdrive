@@ -173,7 +173,7 @@ class CloudStorageApplicationTests {
 		
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + this.port + "/some-random-page");
-		Assertions.assertFalse(driver.getPageSource().contains("Oh no! This page does not exist!"));
+		Assertions.assertTrue(driver.getPageSource().contains("An  error occurred! Please try again later."));
 	}
 
 
