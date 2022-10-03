@@ -3,10 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -14,8 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
@@ -256,15 +254,9 @@ class CloudStorageApplicationTests {
 		doLogIn("Homer", "claw");
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
-		WebElement noteViewButton = driver.findElement(By.id("nav-notes-tab"));
-		noteViewButton.click();
+		notePage.fetchNotePage(driver);
 		//click button to add note
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addNote")));
-		WebElement addNoteButton = driver.findElement(By.id("addNote"));
-		//wait until element loads
-		webDriverWait.until(ExpectedConditions.elementToBeClickable(addNoteButton)).click();
-
+		notePage.addNoteButton(webDriverWait, driver);
 		//add a note
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
 		notePage.addTitle();
@@ -288,6 +280,34 @@ class CloudStorageApplicationTests {
 		String newNoteDescription = "New note description";
 		assertEquals(newNoteTitle, notePage.getDisplayTitle());
 		assertEquals(newNoteDescription, notePage.getDisplayDescription());
+
+	}
+	@Test
+	public void deleteNote() {
+		//create account
+		doMockSignUp("add note", "test", "Homer","claw");
+		//login to test account fetch note tab
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+		notePage.fetchNotePage(driver);
+		//click button to add note
+		notePage.addNoteButton(webDriverWait, driver);
+		//add a note
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+		notePage.addTitle();
+		notePage.addDescription();
+		notePage.addNote();
+		//get notes tab
+		notePage.fetchNotePage(driver);
+		//delete note
+		notePage.deleteNote(webDriverWait, driver);
+		//fetch note page again
+		notePage.fetchNotePage(driver);
+		//WebElement titleElement = driver.findElement(By.id("note-title-view"));
+		List<WebElement> noteLinks = driver.findElements(By.id("note-title-view"));
+		assertTrue(noteLinks.isEmpty());
+
 
 	}
 

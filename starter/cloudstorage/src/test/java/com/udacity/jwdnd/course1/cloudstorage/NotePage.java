@@ -40,6 +40,18 @@ public class NotePage {
         WebElement notesViewButton = driver.findElement(By.id("nav-notes-tab"));
         notesViewButton.click();
     }
+    public void addNoteButton(WebDriverWait webDriverWait, WebDriver driver) {
+        webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addNote")));
+        WebElement addNoteButton = driver.findElement(By.id("addNote"));
+        //wait until element loads
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(addNoteButton)).click();
+    }
+    public void deleteNote(WebDriverWait webDriverWait, WebDriver driver) {
+        webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("deleteButton")));
+        WebElement deleteNoteButton = driver.findElement(By.id("deleteButton"));
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(deleteNoteButton)).click();
+        //deleteButton.click();
+    }
     public String getDisplayTitle() {
         return String.valueOf(noteTitleView.getText());
     }
