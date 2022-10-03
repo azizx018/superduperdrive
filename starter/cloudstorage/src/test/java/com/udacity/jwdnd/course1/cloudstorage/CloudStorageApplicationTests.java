@@ -1,12 +1,9 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -14,19 +11,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
-	private WebDriver driver;
-	private static SignupPage signupPage;
-	private static LoginPage loginPage;
-	private static HomePage homePage;
-	private static NotePage notePage;
 
 	@LocalServerPort
 	private int port;
-	public String baseUrl;
 
-
+	private WebDriver driver;
+	private NotePage notePage;
+	private CredentialPage credentialPage;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -35,13 +32,9 @@ class CloudStorageApplicationTests {
 
 	@BeforeEach
 	public void beforeEach() {
-		baseUrl = "http://localhost:" + port;
 		this.driver = new ChromeDriver();
-		signupPage = new SignupPage(driver);
-		loginPage = new LoginPage(driver);
-		homePage = new HomePage(driver);
 		notePage = new NotePage(driver);
-
+		credentialPage = new CredentialPage(driver);
 	}
 
 	@AfterEach
@@ -54,9 +47,8 @@ class CloudStorageApplicationTests {
 	@Test
 	public void getLoginPage() {
 		driver.get("http://localhost:" + this.port + "/login");
-		Assertions.assertEquals("Login", driver.getTitle());
+		assertEquals("Login", driver.getTitle());
 	}
-
 
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
@@ -132,6 +124,14 @@ class CloudStorageApplicationTests {
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
 
 	}
+	private void doLogout() {
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("logoutButton")));
+		WebElement logoutButton = driver.findElement(By.id("logoutButton"));
+		logoutButton.click();
+		webDriverWait.until(ExpectedConditions.titleContains("Login"));
+	}
+
 
 	/**
 	 * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the 
@@ -150,7 +150,7 @@ class CloudStorageApplicationTests {
 		doMockSignUp("Redirection","Test","RT","123");
 		
 		// Check if we have been redirected to the login page.
-		Assertions.assertEquals("http://localhost:" + this.port + "/login?message=You%20successfully%20signed%20up!&status=true", driver.getCurrentUrl());
+		assertEquals("http://localhost:" + this.port + "/login?message=You%20successfully%20signed%20up!&status=true", driver.getCurrentUrl());
 	}
 
 	/**
@@ -173,7 +173,7 @@ class CloudStorageApplicationTests {
 		
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + this.port + "/some-random-page");
-		Assertions.assertFalse(driver.getPageSource().contains("Whitelabel Error Page"));
+		Assertions.assertTrue(driver.getPageSource().contains("An  error occurred! Please try again later."));
 	}
 
 
@@ -213,17 +213,196 @@ class CloudStorageApplicationTests {
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
 
 	}
+	//note tests
 	@Test
-	public void userCannotAccessHomePageIfNotLoggedIn() {
-		driver.get(baseUrl + "/home");
-		Assertions.assertEquals("Login", driver.getTitle());
+	public void testAddingANote() {
+		//create a test account
+		doMockSignUp("add note", "test", "Homer","claw");
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+		// fetch the notes tab
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+		WebElement notesViewButton = driver.findElement(By.id("nav-notes-tab"));
+		notesViewButton.click();
+		//click button to add note
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addNote")));
+		WebElement addNoteButton = driver.findElement(By.id("addNote"));
+		//wait until element loads
+		webDriverWait.until(ExpectedConditions.elementToBeClickable(addNoteButton)).click();
+
+		//Try to add a note
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+
+		notePage.addTitle();
+		notePage.addDescription();
+		notePage.addNote();
+
+		// fetch the notes tab
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+		WebElement noteViewButton = driver.findElement(By.id("nav-notes-tab"));
+		noteViewButton.click();
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title-view")));
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description-view")));
+
+		//check that the values for title and description match
+		assertEquals("Hello", notePage.getDisplayTitle());
+		assertEquals("Great Day!", notePage.getDisplayDescription());
+	}
+	@Test
+	public void editNote() {
+		//create account
+		//doMockSignUp("add note", "test", "Homer","claw");
+		//login to test account fetch note tab
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+		notePage.fetchNotePage(driver);
+		//click button to add note
+		//notePage.addNoteButton(webDriverWait, driver);
+		//add a note
+		//webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+		//notePage.addTitle();
+		//notePage.addDescription();
+		//notePage.addNote();
+		//logout
+		//doLogout();
+		//login and go to note tab
+		//doLogIn("Homer", "claw");
+		//notePage.fetchNotePage(driver);
+		//wait until element loads
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editButton")));
+		WebElement editNoteButton = driver.findElement(By.id("editButton"));
+		webDriverWait.until(ExpectedConditions.elementToBeClickable(editNoteButton)).click();
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+		notePage.editNote();
+		notePage.fetchNotePage(driver);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title-view")));
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description-view")));
+		String newNoteTitle = "New note title";
+		String newNoteDescription = "New note description";
+		assertEquals(newNoteTitle, notePage.getDisplayTitle());
+		assertEquals(newNoteDescription, notePage.getDisplayDescription());
 
 	}
 	@Test
-	public void userAddNote() {
-		driver.get(baseUrl + "/login");
-		loginPage.login("Beaker", "123");
-		notePage.getNotes();
+	public void deleteNote() {
+		//create account
+		//doMockSignUp("add note", "test", "Homer","claw");
+		//login to test account fetch note tab
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+		notePage.fetchNotePage(driver);
+		//click button to add note
+		//notePage.addNoteButton(webDriverWait, driver);
+		//add a note
+//		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+//		notePage.addTitle();
+//		notePage.addDescription();
+//		notePage.addNote();
+		//get notes tab
+		notePage.fetchNotePage(driver);
+		//delete note
+		notePage.deleteNote(webDriverWait, driver);
+		//fetch note page again
+		notePage.fetchNotePage(driver);
+
+		List<WebElement> noteRecords = driver.findElements(By.id("note-title-view"));
+		assertTrue(noteRecords.isEmpty());
+
+	}
+	@Test
+	public void addCredential() {
+		//create a test account
+		//doMockSignUp("add note", "test", "Homer","claw");
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+		//Get the credentials page
+		credentialPage.fetchCredPage(driver);
+		//click button to add a new credential
+		credentialPage.addCredButton(webDriverWait);
+		//fill in credential form and save credential
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+		credentialPage.addCredential(webDriverWait);
+
+		//fetch credential page once again
+		credentialPage.fetchCredPage(driver);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cred-url-display-value")));
+
+
+		//check that values displayed match
+		assertEquals("www.helloWorld.com", credentialPage.getUrlDisplayValue());
+		assertEquals("RocketMan", credentialPage.getUsernameDisplayValue());
+		assertNotEquals("Rocket", credentialPage.getPasswordDisplayValue());
+
+	}
+	@Test
+	public void editCredential() {
+		//doMockSignUp("add note", "test", "Homer","claw");
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		//get credentials page
+		credentialPage.fetchCredPage(driver);
+
+		//click button to add credential
+		//credentialPage.addCredButton(webDriverWait);
+
+		//add credentials
+		//credentialPage.addCredential(webDriverWait);
+
+		//logout
+		//doLogout();
+
+		//login and go to note tab
+		//doLogIn("Homer", "claw");
+		//credentialPage.fetchCredPage(driver);
+		credentialPage.editCredential(webDriverWait);
+		credentialPage.fetchCredPage(driver);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cred-url-display-value")));
+
+		String newUrl = "www.newWebTitle.com";
+		String newUsername = "VitaminC";
+		String newPassword = "Yummy";
+
+		assertEquals(newUrl, credentialPage.getUrlDisplayValue());
+		assertEquals(newUsername, credentialPage.getUsernameDisplayValue());
+		assertNotEquals(newPassword, credentialPage.getPasswordDisplayValue());
+
+	}
+	@Test
+	public void deleteCredential() {
+		//create account
+		//doMockSignUp("add note", "test", "Homer","claw");
+
+		//login to test account fetch note tab
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		//get credential page
+		credentialPage.fetchCredPage(driver);
+
+		//add credential
+//		credentialPage.addCredButton(webDriverWait);
+//		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+//		credentialPage.addCredential(webDriverWait);
+
+		//fetch credential page
+		//credentialPage.fetchCredPage(driver);
+
+		//wait for page to load creds and delete cred
+		credentialPage.deleteNote(webDriverWait, driver);
+
+		//get credential page
+		credentialPage.fetchCredPage(driver);
+
+		List<WebElement> credentialRecords = driver.findElements(By.id("cred-url-display-value"));
+		assertTrue(credentialRecords.isEmpty());
 
 	}
 

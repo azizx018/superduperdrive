@@ -4,7 +4,7 @@ public class Attachment {
     private Integer fileId;
 
     private String fileName;
-    private static String contentType;
+    private  String contentType;
     private Long fileSize;
     private Integer userId;
     private byte[] fileData;
@@ -39,7 +39,7 @@ public class Attachment {
         this.fileData = fileData;
     }
 
-    public static String getContentType() {
+    public String getContentType() {
         return contentType;
     }
 

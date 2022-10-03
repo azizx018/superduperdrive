@@ -13,23 +13,26 @@ public class NoteListService {
     public NoteListService(NoteMapper noteMapper) {
         this.noteMapper = noteMapper;
     }
-    public boolean isNoteNameAvailable(String noteTitle, Integer userId) {
-        return noteMapper.getNoteInfoByNoteTitle(noteTitle, userId) == null;
+
+    public int updateNote(Note note) {
+        note.setNoteId(note.getNoteId());
+        note.setNoteDescription(note.getNoteDescription());
+        note.setNoteTitle(note.getNoteTitle());
+        return noteMapper.updateNote(note);
     }
 
-    public Integer saveNewNote(String noteTitle, String noteDescription, Integer userId) {
-        Note note = new Note(null, noteTitle, noteDescription, userId);
-        return noteMapper.saveNote(note);
+    public int saveNote(Note note, Integer userId) {
+        return noteMapper.saveNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), note.getUserId()));
     }
+    public Note getSelectedNote(Integer noteId) {
+        return noteMapper.selectNote(noteId);
+    }
+
     public List<Note> getNotesByUser(Integer userId) {
-        return noteMapper.getNoteByUserId(userId);
+        return noteMapper.getNotesByUser(userId);
     }
+
     public int deleteNote(Integer noteId) {
         return noteMapper.deleteNoteByNoteId(noteId);
-    }
-
-    public void editSelectedNote(Integer noteId, Integer userId) {
-        Note selectedNote = noteMapper.getNoteInfoByNoteId(noteId, userId);
-
     }
 }
