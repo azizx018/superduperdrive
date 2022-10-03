@@ -23,6 +23,7 @@ class CloudStorageApplicationTests {
 
 	private WebDriver driver;
 	private NotePage notePage;
+	private CredentialPage credentialPage;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -33,6 +34,7 @@ class CloudStorageApplicationTests {
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
 		notePage = new NotePage(driver);
+		credentialPage = new CredentialPage(driver);
 	}
 
 	@AfterEach
@@ -211,6 +213,7 @@ class CloudStorageApplicationTests {
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
 
 	}
+	//note tests
 	@Test
 	public void testAddingANote() {
 		//create a test account
@@ -304,10 +307,35 @@ class CloudStorageApplicationTests {
 		notePage.deleteNote(webDriverWait, driver);
 		//fetch note page again
 		notePage.fetchNotePage(driver);
-		//WebElement titleElement = driver.findElement(By.id("note-title-view"));
+
 		List<WebElement> noteLinks = driver.findElements(By.id("note-title-view"));
 		assertTrue(noteLinks.isEmpty());
 
+
+	}
+	@Test
+	public void addCredential() {
+		//create a test account
+		doMockSignUp("add note", "test", "Homer","claw");
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+		//Get the credentials page
+		credentialPage.fetchCredPage(driver);
+		//click button to add a new credential
+		credentialPage.addCredButton(webDriverWait, driver);
+		//fill in credential form and save credential
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+		credentialPage.addUrl();
+		credentialPage.addUsername();
+		credentialPage.addPassword();
+		credentialPage.saveCred();
+		//fetch credential page once again
+		credentialPage.fetchCredPage(driver);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cred-url-display-value")));
+		//check that values displayed match
+		assertEquals("www.helloWorld.com", credentialPage.getUrlDisplayValue());
+		assertEquals("RocketMan", credentialPage.getUsernameDisplayValue());
 
 	}
 
