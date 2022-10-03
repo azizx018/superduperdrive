@@ -1,9 +1,12 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class NotePage {
 
@@ -13,8 +16,8 @@ public class NotePage {
     @FindBy(id = "note-description")
     private WebElement noteDescription;
 
-    @FindBy(id = "noteSubmit")
-    private WebElement noteSubmit;
+    @FindBy(id = "save-note")
+    private WebElement saveNote;
 
     @FindBy(id = "note-title-view")
     private WebElement noteTitleView;
@@ -22,8 +25,20 @@ public class NotePage {
     @FindBy(id = "note-description-view")
     private WebElement noteDescriptionView;
 
+    @FindBy(id = "editButton")
+    private WebElement editButton;
+
+    @FindBy(id = "deleteButton")
+    private WebElement deleteButton;
+
     public NotePage(WebDriver driver) {
         PageFactory.initElements(driver, this);
+    }
+    public void fetchNotePage(WebDriver driver) {
+        WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+        webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+        WebElement notesViewButton = driver.findElement(By.id("nav-notes-tab"));
+        notesViewButton.click();
     }
     public String getDisplayTitle() {
         return String.valueOf(noteTitleView.getText());
@@ -32,13 +47,25 @@ public class NotePage {
         return String.valueOf(noteDescriptionView.getText());
     }
     public void addTitle(){
-        noteTitle.sendKeys("hello");
+        noteTitle.sendKeys("Hello");
     }
     public void addDescription() {
-        noteDescription.sendKeys("Today");
+        noteDescription.sendKeys("Great Day!");
     }
 
     public void addNote() {
-        noteSubmit.click();
+        saveNote.click();
+    }
+    public void editNote() {
+        //addTitle();
+        //addDescription();
+        //editButton.click();
+        noteTitle.clear();
+        noteDescription.clear();
+        noteTitle.sendKeys("New note title");
+        noteDescription.sendKeys("New note description");
+        saveNote.click();
+
+
     }
 }

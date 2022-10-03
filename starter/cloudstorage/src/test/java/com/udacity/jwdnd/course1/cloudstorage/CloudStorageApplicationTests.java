@@ -124,6 +124,14 @@ class CloudStorageApplicationTests {
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
 
 	}
+	private void doLogout() {
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("logoutButton")));
+		WebElement logoutButton = driver.findElement(By.id("logoutButton"));
+		logoutButton.click();
+		webDriverWait.until(ExpectedConditions.titleContains("Login"));
+	}
+
 
 	/**
 	 * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the 
@@ -210,15 +218,76 @@ class CloudStorageApplicationTests {
 		//create a test account
 		doMockSignUp("add note", "test", "Homer","claw");
 		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+		// fetch the notes tab
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+		WebElement notesViewButton = driver.findElement(By.id("nav-notes-tab"));
+		notesViewButton.click();
+		//click button to add note
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addNote")));
+		WebElement addNoteButton = driver.findElement(By.id("addNote"));
+		//wait until element loads
+		webDriverWait.until(ExpectedConditions.elementToBeClickable(addNoteButton)).click();
 
 		//Try to add a note
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+
 		notePage.addTitle();
 		notePage.addDescription();
 		notePage.addNote();
-		//check that the values for title and description match
-		assertEquals("hello", notePage.getDisplayTitle());
-		assertEquals("Today", notePage.getDisplayDescription());
 
+		// fetch the notes tab
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+		WebElement noteViewButton = driver.findElement(By.id("nav-notes-tab"));
+		noteViewButton.click();
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title-view")));
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description-view")));
+
+		//check that the values for title and description match
+		assertEquals("Hello", notePage.getDisplayTitle());
+		assertEquals("Great Day!", notePage.getDisplayDescription());
+	}
+	@Test
+	public void editNote() {
+		//create account
+		doMockSignUp("add note", "test", "Homer","claw");
+		//login to test account fetch note tab
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+		WebElement noteViewButton = driver.findElement(By.id("nav-notes-tab"));
+		noteViewButton.click();
+		//click button to add note
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addNote")));
+		WebElement addNoteButton = driver.findElement(By.id("addNote"));
+		//wait until element loads
+		webDriverWait.until(ExpectedConditions.elementToBeClickable(addNoteButton)).click();
+
+		//add a note
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+		notePage.addTitle();
+		notePage.addDescription();
+		notePage.addNote();
+		//logout
+		doLogout();
+		//login and go to note tab
+		doLogIn("Homer", "claw");
+		notePage.fetchNotePage(driver);
+		//wait until element loads
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editButton")));
+		WebElement editNoteButton = driver.findElement(By.id("editButton"));
+		webDriverWait.until(ExpectedConditions.elementToBeClickable(editNoteButton)).click();
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+		notePage.editNote();
+		notePage.fetchNotePage(driver);
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title-view")));
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description-view")));
+		String newNoteTitle = "New note title";
+		String newNoteDescription = "New note description";
+		assertEquals(newNoteTitle, notePage.getDisplayTitle());
+		assertEquals(newNoteDescription, notePage.getDisplayDescription());
 
 	}
 
