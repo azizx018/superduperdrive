@@ -69,9 +69,6 @@ public class NotePage {
         saveNote.click();
     }
     public void editNote() {
-        //addTitle();
-        //addDescription();
-        //editButton.click();
         noteTitle.clear();
         noteDescription.clear();
         noteTitle.sendKeys("New note title");

@@ -47,21 +47,17 @@ public class CredentialPage {
         webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-credentials-tab")));
         WebElement credentialViewButton = driver.findElement(By.id("nav-credentials-tab"));
         credentialViewButton.click();
+
     }
-    public void addCredButton(WebDriverWait webDriverWait, WebDriver driver) {
+    public void addCredButton(WebDriverWait webDriverWait) {
         //wait until element loads
         webDriverWait.until(ExpectedConditions.elementToBeClickable(addCredentialButton)).click();
     }
-    public void addUrl() {
+    public void addCredential(WebDriverWait webDriverWait) {
+        webDriverWait.until(ExpectedConditions.visibilityOf(credUrlInput));
         credUrlInput.sendKeys("www.helloWorld.com");
-    }
-    public void addUsername() {
         credUsernameInput.sendKeys("RocketMan");
-    }
-    public void addPassword() {
         credPasswordInput.sendKeys("Rocket");
-    }
-    public void saveCred() {
         saveCredentialsButton.click();
     }
     public String getUrlDisplayValue() {
@@ -72,5 +68,20 @@ public class CredentialPage {
     }
     public String getPasswordDisplayValue() {
         return String.valueOf(credPasswordDisplayValue.getText());
+    }
+    public void deleteNote(WebDriverWait webDriverWait, WebDriver driver) {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(deleteCredentialButton)).click();
+    }
+    public void editCredential(WebDriverWait webDriverWait) {
+        webDriverWait.until(ExpectedConditions.visibilityOf(editCredentialButton));
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(editCredentialButton)).click();
+        webDriverWait.until(ExpectedConditions.visibilityOf(credUrlInput));
+        credUrlInput.clear();
+        credUrlInput.sendKeys("www.newWebTitle.com");
+        credUsernameInput.clear();
+        credUsernameInput.sendKeys("VitaminC");
+        credPasswordInput.clear();
+        credPasswordInput.sendKeys("Yummy");
+        saveCredentialsButton.click();
     }
 }

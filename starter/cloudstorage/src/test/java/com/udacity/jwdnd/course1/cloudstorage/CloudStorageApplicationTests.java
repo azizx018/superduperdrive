@@ -252,24 +252,24 @@ class CloudStorageApplicationTests {
 	@Test
 	public void editNote() {
 		//create account
-		doMockSignUp("add note", "test", "Homer","claw");
+		//doMockSignUp("add note", "test", "Homer","claw");
 		//login to test account fetch note tab
 		doLogIn("Homer", "claw");
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
 		notePage.fetchNotePage(driver);
 		//click button to add note
-		notePage.addNoteButton(webDriverWait, driver);
+		//notePage.addNoteButton(webDriverWait, driver);
 		//add a note
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
-		notePage.addTitle();
-		notePage.addDescription();
-		notePage.addNote();
+		//webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+		//notePage.addTitle();
+		//notePage.addDescription();
+		//notePage.addNote();
 		//logout
-		doLogout();
+		//doLogout();
 		//login and go to note tab
-		doLogIn("Homer", "claw");
-		notePage.fetchNotePage(driver);
+		//doLogIn("Homer", "claw");
+		//notePage.fetchNotePage(driver);
 		//wait until element loads
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editButton")));
 		WebElement editNoteButton = driver.findElement(By.id("editButton"));
@@ -288,19 +288,19 @@ class CloudStorageApplicationTests {
 	@Test
 	public void deleteNote() {
 		//create account
-		doMockSignUp("add note", "test", "Homer","claw");
+		//doMockSignUp("add note", "test", "Homer","claw");
 		//login to test account fetch note tab
 		doLogIn("Homer", "claw");
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
 		notePage.fetchNotePage(driver);
 		//click button to add note
-		notePage.addNoteButton(webDriverWait, driver);
+		//notePage.addNoteButton(webDriverWait, driver);
 		//add a note
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
-		notePage.addTitle();
-		notePage.addDescription();
-		notePage.addNote();
+//		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+//		notePage.addTitle();
+//		notePage.addDescription();
+//		notePage.addNote();
 		//get notes tab
 		notePage.fetchNotePage(driver);
 		//delete note
@@ -308,35 +308,101 @@ class CloudStorageApplicationTests {
 		//fetch note page again
 		notePage.fetchNotePage(driver);
 
-		List<WebElement> noteLinks = driver.findElements(By.id("note-title-view"));
-		assertTrue(noteLinks.isEmpty());
-
+		List<WebElement> noteRecords = driver.findElements(By.id("note-title-view"));
+		assertTrue(noteRecords.isEmpty());
 
 	}
 	@Test
 	public void addCredential() {
 		//create a test account
-		doMockSignUp("add note", "test", "Homer","claw");
+		//doMockSignUp("add note", "test", "Homer","claw");
 		doLogIn("Homer", "claw");
 		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
 		//Get the credentials page
 		credentialPage.fetchCredPage(driver);
 		//click button to add a new credential
-		credentialPage.addCredButton(webDriverWait, driver);
+		credentialPage.addCredButton(webDriverWait);
 		//fill in credential form and save credential
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
-		credentialPage.addUrl();
-		credentialPage.addUsername();
-		credentialPage.addPassword();
-		credentialPage.saveCred();
+		credentialPage.addCredential(webDriverWait);
+
 		//fetch credential page once again
 		credentialPage.fetchCredPage(driver);
 		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cred-url-display-value")));
+
+
 		//check that values displayed match
 		assertEquals("www.helloWorld.com", credentialPage.getUrlDisplayValue());
 		assertEquals("RocketMan", credentialPage.getUsernameDisplayValue());
 		assertNotEquals("Rocket", credentialPage.getPasswordDisplayValue());
+
+	}
+	@Test
+	public void editCredential() {
+		//doMockSignUp("add note", "test", "Homer","claw");
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		//get credentials page
+		credentialPage.fetchCredPage(driver);
+
+		//click button to add credential
+		//credentialPage.addCredButton(webDriverWait);
+
+		//add credentials
+		//credentialPage.addCredential(webDriverWait);
+
+		//logout
+		//doLogout();
+
+		//login and go to note tab
+		//doLogIn("Homer", "claw");
+		//credentialPage.fetchCredPage(driver);
+		credentialPage.editCredential(webDriverWait);
+		credentialPage.fetchCredPage(driver);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cred-url-display-value")));
+
+		String newUrl = "www.newWebTitle.com";
+		String newUsername = "VitaminC";
+		String newPassword = "Yummy";
+
+		assertEquals(newUrl, credentialPage.getUrlDisplayValue());
+		assertEquals(newUsername, credentialPage.getUsernameDisplayValue());
+		assertNotEquals(newPassword, credentialPage.getPasswordDisplayValue());
+
+	}
+	@Test
+	public void deleteCredential() {
+		//create account
+		//doMockSignUp("add note", "test", "Homer","claw");
+
+		//login to test account fetch note tab
+		doLogIn("Homer", "claw");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+		webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+		//get credential page
+		credentialPage.fetchCredPage(driver);
+
+		//add credential
+//		credentialPage.addCredButton(webDriverWait);
+//		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+//		credentialPage.addCredential(webDriverWait);
+
+		//fetch credential page
+		//credentialPage.fetchCredPage(driver);
+
+		//wait for page to load creds and delete cred
+		credentialPage.deleteNote(webDriverWait, driver);
+
+		//get credential page
+		credentialPage.fetchCredPage(driver);
+
+		List<WebElement> credentialRecords = driver.findElements(By.id("cred-url-display-value"));
+		assertTrue(credentialRecords.isEmpty());
 
 	}
 
