@@ -336,6 +336,7 @@ class CloudStorageApplicationTests {
 		//check that values displayed match
 		assertEquals("www.helloWorld.com", credentialPage.getUrlDisplayValue());
 		assertEquals("RocketMan", credentialPage.getUsernameDisplayValue());
+		assertNotEquals("Rocket", credentialPage.getPasswordDisplayValue());
 
 	}
 
